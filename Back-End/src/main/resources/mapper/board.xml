@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ssafy.enjoytrip.board.model.mapper.BoardMapper">
+
+	<resultMap type="boardDto" id="article">
+		<result column="article_no" property="articleNo"/>
+		<result column="user_id" property="userId"/>
+		<result column="user_name" property="userName"/>
+		<result column="subject" property="subject"/>
+		<result column="content" property="content"/>
+		<result column="hit" property="hit"/>
+		<result column="register_time" property="registerTime"/>
+	</resultMap>
+
+	<select id="preview" parameterType="int" resultMap="article">
+		select u.user_name, b.subject, b.hit
+		from board b inner join users u 
+		on b.user_id = u.user_id
+		order by article_no desc
+		limit #{num}
+	</select>
+	
+	<sql id="search">
+		<if test="word != null and word != '' and key != ''">
+			<where>
+				<if test="key == 'subject'">
+					and subject like concat('%', #{word}, '%')
+				</if>
+				<if test="key != 'subject'">
+					and ${key} = #{word}
+				</if>
+			</where>
+		</if>
+	</sql>
+	
+	<select id="countArticle" parameterType="map" resultType="int">
+		select count(*)
+		from board
+		<include refid="search"></include>
+	</select>
+	
+	<select id="listArticle" parameterType="map" resultMap="article">
+		select b.article_no, b.user_id, u.user_name, b.subject, b.content, b.hit, b.register_time
+		from board b inner join users u 
+		on b.user_id = u.user_id
+		<include refid="search"></include>
+		order by article_no desc 
+		limit ${start}, ${spl}
+	</select>
+	
+	<insert id="writeArticle" parameterType="boardDto">
+		insert into board
+		(user_id, subject, content, hit, register_time)
+		values
+		(#{userId}, #{subject}, #{content}, 0, now())
+	</insert>
+	
+	<select id="getArticle" parameterType="int" resultMap="article">
+		select b.article_no, b.user_id, u.user_name, b.subject, b.content, b.hit, b.register_time
+		from board b inner join users u 
+		on b.user_id = u.user_id
+		where article_no = #{articleNo}
+	</select>
+	
+	<update id="updateHit" parameterType="int">
+		update board
+		set hit = hit + 1
+		where article_no = #{articleNo}
+	</update>
+	
+	<delete id="deleteArticle" parameterType="int">
+		delete from board
+		where article_no = #{articleNo}
+	</delete>
+	
+	<update id="modifyArticle" parameterType="boardDto">
+		update board
+		set subject = #{subject}, content = #{content}
+		where article_no = #{articleNo}
+	</update>
+	
+
+</mapper>

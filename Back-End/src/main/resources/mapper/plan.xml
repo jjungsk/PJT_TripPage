@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="com.ssafy.enjoytrip.plan.model.mapper.PlanMapper">
+
+ 	<resultMap type="tourListDto" id="tourspot">
+ 		<result column="content_id" property="contentId"/>
+ 		<result column="title" property="title"/>
+ 		<result column="mapx" property="mapx"/>
+ 		<result column="mapy" property="mapy"/>
+ 		<result column="image" property="image"/>
+	</resultMap>
+	
+	<resultMap type="planDto" id="plan">
+		<result column="plan_no" property="planNo"/>
+		<result column="user_id" property="userId"/>
+		<result column="plan_subject" property="planSubject"/>
+		<result column="plan_content" property="planContent"/>
+		<result column="hit" property="hit"/>
+		<result column="register_time" property="registerTime"/>
+	</resultMap>
+	
+	<resultMap type="planDto" id="viewPlan" extends="plan">
+		<collection property="planInforms" column="plan_no" javaType="list" ofType="tourListDto" select="planInfoList" />
+	</resultMap>
+	
+	<resultMap type="planDto" id="previewPlan" extends="plan">
+		<collection property="planInforms" column="plan_no" javaType="list" ofType="tourListDto" select="planInfoOne" />
+	</resultMap>
+
+	<select id="recommend" parameterType="int" resultMap="tourspot">
+		select content_id, title, mapx, mapy, image
+		from tour_list
+		order by rand()
+		limit #{num}
+	</select>
+	
+	<select id="search" parameterType="string" resultMap="tourspot">
+		select content_id, title, mapx, mapy, image
+		from tour_list
+		where title like concat('%', #{word}, '%')
+	</select>
+	
+	<insert id="registPlan" parameterType="planDto">
+		insert into plan (user_id, plan_subject, plan_content, hit, register_time)
+		values (#{userId}, #{planSubject}, #{planContent}, 0, now())
+		<selectKey resultType="int" keyProperty="planNo" order="AFTER">
+			select last_insert_id()
+		</selectKey>
+	</insert>
+	
+	<insert id="registPlanInfo" parameterType="planDto">
+		insert into plan_inform (plan_no, idx, content_id)
+		values
+		<foreach collection="planInforms" item="planinfo" index="i" separator=" , ">
+			(#{planNo}, #{i}, #{planinfo.contentId})
+		</foreach>
+	</insert>
+	
+	<select id="listPlan" resultMap="previewPlan">
+		select plan_no, user_id, plan_subject, hit
+		from plan
+	</select>
+	
+	<select id="planInfoOne" parameterType="int" resultMap="tourspot">
+		select t.image
+		from plan_inform p
+		inner join tour_list t
+		on p.content_id = t.content_id
+		where p.plan_no = #{plan_no}
+		order by p.idx
+		limit 1
+	</select>
+	
+	<select id="getPlan" parameterType="int" resultMap="viewPlan">
+		select plan_no, user_id, plan_subject, plan_content, hit, register_time
+		from plan
+		where plan_no = #{plan_no}
+	</select>
+	
+	<update id="updateHit" parameterType="int">
+		update plan
+		set hit = hit + 1
+		where plan_no = #{plan_no}
+	</update>
+	
+	<select id="planInfoList" parameterType="int" resultMap="tourspot">
+		select t.content_id, t.title, t.mapx, t.mapy, t.image
+		from plan_inform p
+		inner join tour_list t
+		on p.content_id = t.content_id
+		where p.plan_no = #{plan_no}
+		order by p.idx
+	</select>
+	
+	<delete id="deletePlanInfos" parameterType="int">
+		delete from plan_inform
+		where plan_no = #{planNo}
+	</delete>
+	
+	<delete id="deletePlan" parameterType="int">
+		delete from plan
+		where plan_no = #{planNo}
+	</delete>
+	
+</mapper>

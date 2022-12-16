@@ -1,0 +1,117 @@
+.map_wrap {
+  position: relative;
+  overflow: hidden;
+}
+.radius_border {
+  border: 1px solid #919191;
+  border-radius: 5px;
+}
+.custom_zoomcontrol {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 36px;
+  height: 80px;
+  overflow: hidden;
+  z-index: 1;
+  background-color: #f5f5f5;
+}
+.custom_zoomcontrol span {
+  display: block;
+  width: 36px;
+  height: 40px;
+  text-align: center;
+  cursor: pointer;
+}
+.custom_zoomcontrol span img {
+  width: 15px;
+  height: 15px;
+  margin-top: 9px;
+  margin-right: 1px;
+  border: none;
+}
+.custom_zoomcontrol span:first-child {
+  border-bottom: 1px solid #bfbfbf;
+}
+
+/* map overlay */
+.wrap {
+  position: absolute;
+  left: 0;
+  bottom: 40px;
+  width: 288px;
+  min-height: 132px;
+  margin-left: -144px;
+  text-align: left;
+  overflow: hidden;
+  font-size: 12px;
+  font-family: "Malgun Gothic", dotum, "돋움", sans-serif;
+  line-height: 1.5;
+}
+.wrap * {
+  padding: 0;
+  margin: 0;
+}
+.wrap .info {
+  width: 288px;
+  min-height: 120px;
+  border-radius: 10px;
+  border-bottom: 2px solid #ccc;
+  border-right: 1px solid #ccc;
+  overflow: hidden;
+  background: #fff;
+}
+.wrap .info:nth-child(1) {
+  border: 0;
+  box-shadow: 0px 1px 2px #888;
+}
+.info .title {
+  padding: 5px 0 0 10px;
+  min-height: 30px;
+  background: rgb(208, 222, 240);
+  border-bottom: 1px solid #ddd;
+  font-size: 18px;
+  font-weight: bold;
+  width: 288px;
+  white-space: normal;
+  word-break: break-all;
+  word-wrap: break-word;
+}
+.info .body {
+  width: 288px;
+  margin-top: 7px;
+  margin-bottom: 10px;
+  display: flex;
+}
+.info .img {
+  margin-left: 7px;
+  margin-right: 5px;
+}
+
+.info .ellipsis {
+  width: 200px;
+  word-break: break-all;
+  word-wrap: break-word;
+  white-space: normal;
+}
+
+/* tour list 불러오는 srcoll-spy 스크롤바 css */
+.tour-section::-webkit-scrollbar {
+    width: 16px;
+}
+.tour-section::-webkit-scrollbar-track {
+    background-color: #e4e4e4;
+    border-radius: 100px;
+}
+.tour-section::-webkit-scrollbar-thumb {
+    background-color: #d4aa70;
+    border-radius: 100px;
+}
+.tour-section {
+    scrollbar-color: #D4AA70 #e4e4e4;
+}
+.tour-section::-webkit-scrollbar-thumb {
+    background-image: linear-gradient(180deg, #D0368A 0%, #708AD4 99%);
+    box-shadow: inset 2px 2px 5px 0 rgba(#fff, 0.5);
+    border-radius: 100px;
+}

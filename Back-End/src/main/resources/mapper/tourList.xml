@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ssafy.enjoytrip.tourlist.model.mapper.TourListMapper">
+
+	<resultMap type="doDto" id="do">
+		<result column="area_code" property="areaCode" />
+		<result column="name" property="name" />
+	</resultMap>
+	
+	<resultMap type="sigunguDto" id="gugun">
+		<result column="area_code" property="areaCode" />
+		<result column="sigungu_code" property="sigunguCode" />
+		<result column="name" property="name" />
+	</resultMap>
+	
+	<resultMap type="tourListDto" id="tourList">
+		<result column="title" property="title" />
+		<result column="addr1" property="addr1" />
+		<result column="mapx" property="mapx" />
+		<result column="mapy" property="mapy" />
+		<result column="image" property="image" />
+		<result column="tel" property="tel" />
+		<result column="zipcode" property="zipcode" />
+		<result column="content_description" property="desc" />
+	</resultMap>
+	
+	<select id="sidoList" resultMap="do">
+		select area_code, name
+		from do
+	</select>
+	
+	<select id="gugunList" parameterType="int" resultMap="gugun">
+		select area_code, sigungu_code, name
+		from sigungu
+		where area_code = #{areaCode}
+	</select>
+	
+	<select id="getData" parameterType="map" resultMap="tourList">
+		select tl.title, tl.addr1, tl.mapx, tl.mapy, tl.image, tl.tel, tl.zipcode, cid.content_description
+		from tour_list tl, content_id_detail cid
+		where tl.content_id = cid.content_id
+		and area_code = #{areaCode} and sigungu_code = #{sigunguCode}
+		<if test="contentTypeId != null">
+			and content_type_id = #{contentTypeId}
+		</if>
+	</select>
+ 	
+</mapper>
